@@ -10,18 +10,16 @@ class Game {
     constructor() {
         this.snake = new Snake();
         this.food = new Food();
-        this.grid = new Grid(20, 20); // Размеры игрового поля
+        this.grid = new Grid(20, 20); // Game grid size
         this.renderer = new Renderer();
-        this.inputHandler = new InputHandler(this.snake);
+        this.inputHandler = new InputHandler(this.snake); // Pass snake to InputHandler
     }
 
     start() {
-        // Запуск игрового цикла
         requestAnimationFrame(this.gameLoop.bind(this));
     }
 
     gameLoop() {
-        // Основной цикл игры
         this.snake.move();
         if (this.snake.checkCollision(this.food)) {
             this.snake.grow();
