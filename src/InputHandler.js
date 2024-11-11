@@ -11,6 +11,7 @@ class InputHandler {
     }
 
     handleKeydown(event) {
+        console.log(`Key pressed: ${event.key}`); // Debugging line
         // Check key code and set snake direction accordingly
         switch (event.key) {
             case 'ArrowUp':

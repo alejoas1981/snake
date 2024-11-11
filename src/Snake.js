@@ -8,42 +8,47 @@ class Snake {
     }
 
     move() {
-        // Get the head position and add direction using bitwise shift for performance
+        // Calculate new head position based on current direction
         const head = {
-            x: (this.segments[0].x + this.direction.x) >> 0,
-            y: (this.segments[0].y + this.direction.y) >> 0
+            x: this.segments[0].x + this.direction.x,
+            y: this.segments[0].y + this.direction.y
         };
-
-        // Add new head position at the start of the array
+        console.log(`Current direction: (${this.direction.x}, ${this.direction.y})`); // Debugging line
+        // Add the new head position to the beginning of the segments array
         this.segments.unshift(head);
+        console.log(`Moving to: (${head.x}, ${head.y})`); // Debugging line
 
-        // Remove the last segment if the snake is not growing
+        // If the snake is not growing, remove the last segment
         if (!this.growing) {
             this.segments.pop();
         } else {
-            // Reset growing flag after the snake has grown
-            this.growing = false;
+            this.growing = false;  // Reset growing flag
         }
     }
 
     setDirection(x, y) {
-        // Update direction with the given x and y values
-        this.direction = { x: x >> 0, y: y >> 0 };
+        // Ensure that the new direction is not directly opposite to the current direction
+        if ((x !== 0 && x !== -this.direction.x) || (y !== 0 && y !== -this.direction.y)) {
+            console.log(`Direction changed to: (${x}, ${y})`); // Debugging line
+            this.direction = { x, y };
+        }
     }
 
     grow() {
-        // Set the flag to grow the snake
-        this.growing = true;
+        this.growing = true; // Set growing flag to true
     }
 
     checkCollision(point) {
         // Check if the snake's head collides with a given point (e.g., food)
-        return (this.segments[0].x === point.x) && (this.segments[0].y === point.y);
+        const head = this.segments[0];
+        return head.x === point.x && head.y === point.y;
     }
 
     checkSelfCollision() {
-        // Check if the snake's head collides with any of its own segments
+        // Get the head of the snake
         const [head, ...body] = this.segments;
+
+        // Check if any segment in the body has the same position as the head
         return body.some(segment => segment.x === head.x && segment.y === head.y);
     }
 }
