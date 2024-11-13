@@ -78,6 +78,7 @@ class Game {
         // Disable the dropdown and "Start" button after game starts
         this.startButton.disabled = true;
         this.speedSelect.disabled = true;
+        this.restartButton.disabled = false; // Enable "Restart" button during the game
 
         this.gameLoop();
     }
@@ -116,25 +117,33 @@ class Game {
         this.isGameOver = true;
         document.getElementById('score').textContent = `Game Over! Final Score: ${this.score}`;
 
+        // Enable the "Restart" button after game ends
+        this.restartButton.disabled = false;
+
         // Reset dropdown and "Start" button after game ends
-        this.startButton.disabled = false;
+        this.startButton.disabled = true;
         this.speedSelect.disabled = false;
         this.speedSelect.value = ""; // Reset dropdown to initial state
     }
 
     restart() {
-        // Reset game state and start a new game with the selected speed
-        this.isGameOver = false;
-        this.snake = new Snake();
-        this.food.reposition(this.grid);
+        // Reset game state and UI for a new start
+        this.isGameOver = true; // Set to game over to prevent any unwanted actions
         this.score = 0;
-
         document.getElementById('score').textContent = `Score: ${this.score}`;
 
-        // Disable the "Restart" button again after restart
-        this.restartButton.disabled = true;
+        // Reset snake and food position
+        this.snake = new Snake();
+        this.food.reposition(this.grid);
 
-        this.gameLoop();
+        // Reset speed selection and enable speed dropdown
+        this.speed = null;
+        this.speedSelect.value = "";
+        this.speedSelect.disabled = false;
+
+        // Disable "Restart" and enable "Start" button
+        this.restartButton.disabled = true;
+        this.startButton.disabled = true;
     }
 }
 

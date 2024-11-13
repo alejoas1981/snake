@@ -5,6 +5,7 @@ A simple Snake game implemented in WebGL. This project uses Object-Oriented Prog
 
 ## Project Structure
 
+![img.png](img.png)
 
 plaintext
 Copy code
