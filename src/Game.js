@@ -38,6 +38,9 @@ class Game {
         this.restartButton.addEventListener('click', () => {
             this.restart();
         });
+
+        window.addEventListener('keydown', (e) => this.handleKeyDown(e));
+        window.addEventListener('keyup', (e) => this.handleKeyUp(e));
     }
 
     setSpeed() {
@@ -45,19 +48,20 @@ class Game {
         const selectedValue = this.speedSelect.value;
         switch (selectedValue) {
             case 'slow':
-                this.speed = 500; // Slow speed
+                this.baseSpeed = 500; // Slow speed
                 break;
             case 'medium':
-                this.speed = 200; // Medium speed
+                this.baseSpeed = 200; // Medium speed
                 break;
             case 'fast':
-                this.speed = 100; // Fast speed
+                this.baseSpeed = 100; // Fast speed
                 break;
             default:
-                this.speed = null;
+                this.baseSpeed = 200;
         }
 
-        // Enable the "Start" button only if a speed is selected
+        this.speed = this.baseSpeed;
+        this.fastSpeed = this.baseSpeed / 3; // Calculate fast speed as half of base speed
         this.startButton.disabled = !this.speed;
     }
 
@@ -89,14 +93,19 @@ class Game {
     gameLoop() {
         if (this.isGameOver) return;
 
-        // Pass grid dimensions to move method for boundary handling
         this.snake.move(this.grid.width, this.grid.height);
 
         if (this.snake.checkCollision(this.food.getPosition())) {
-            this.snake.grow();
-            this.food.reposition(this.grid);
-            this.score++;
+            if (this.food.getType() === 'double') {
+                this.score += 2;        // Double food gives 2 points
+                this.snake.grow(2);     // Grow by 2 segments
+            } else {
+                this.score++;
+                this.snake.grow();
+            }
+
             document.getElementById('score').textContent = `Score: ${this.score}`;
+            this.food.reposition(this.grid); // Reposition food
         }
 
         if (this.snake.checkSelfCollision()) {
@@ -151,6 +160,20 @@ class Game {
         // Disable "Restart" and enable "Start" button
         this.restartButton.disabled = true;
         this.startButton.disabled = true;
+    }
+
+    handleKeyDown(event) {
+        // Set fast speed when holding down direction keys
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+            this.speed = this.fastSpeed;
+        }
+    }
+
+    handleKeyUp(event) {
+        // Return to base speed when direction key is released
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+            this.speed = this.baseSpeed;
+        }
     }
 }
 

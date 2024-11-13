@@ -12,19 +12,46 @@ class Renderer {
     render(snake, food) {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Draw food
+        // Draw food based on type
         const foodPosition = food.getPosition();
-        this.context.fillStyle = '#000';
-        this.context.fillRect(
-            foodPosition.x * this.cellSize,
-            foodPosition.y * this.cellSize,
-            this.cellSize,
-            this.cellSize
-        );
+        const foodType = food.getType();
 
-        // Draw snake segments with dynamic cell size
+        if (foodType === 'normal') {
+            this.context.fillStyle = '#000';
+            this.context.fillRect(
+                foodPosition.x * this.cellSize,
+                foodPosition.y * this.cellSize,
+                this.cellSize,
+                this.cellSize
+            );
+        } else if (foodType === 'double') {
+            // Draw a larger, blinking double food with a bow
+            const size = this.cellSize * 1.3; // 1.3x size for double food
+            const offset = (size - this.cellSize) / 2;
+
+            // Make the food blink
+            this.context.fillStyle = Math.random() > 0.5 ? '#000' : '#444';
+
+            // Draw the double food square
+            this.context.fillRect(
+                foodPosition.x * this.cellSize - offset,
+                foodPosition.y * this.cellSize - offset,
+                size,
+                size
+            );
+
+            // Draw bow on top of the double food
+            this.context.fillStyle = '#999';
+            this.context.beginPath();
+            this.context.moveTo(foodPosition.x * this.cellSize - offset + size / 4, foodPosition.y * this.cellSize - offset - size / 4);
+            this.context.lineTo(foodPosition.x * this.cellSize - offset + (3 * size) / 4, foodPosition.y * this.cellSize - offset - size / 4);
+            this.context.lineTo(foodPosition.x * this.cellSize - offset + size / 2, foodPosition.y * this.cellSize - offset);
+            this.context.closePath();
+            this.context.fill();
+        }
+
+        // Draw snake segments
         snake.segments.forEach(segment => {
-            // Draw outer square
             this.context.fillStyle = '#000';
             this.context.fillRect(
                 segment.x * this.cellSize,
@@ -33,7 +60,6 @@ class Renderer {
                 this.cellSize
             );
 
-            // Draw transparent inner square to create gap
             this.context.clearRect(
                 segment.x * this.cellSize + 2,
                 segment.y * this.cellSize + 2,
@@ -41,7 +67,6 @@ class Renderer {
                 this.cellSize - 4
             );
 
-            // Draw inner black square
             this.context.fillStyle = '#000';
             this.context.fillRect(
                 segment.x * this.cellSize + 3,
