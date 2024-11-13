@@ -1,13 +1,111 @@
+/* Body background with a subtle gradient and mosaic */
 body {
-    background-color: #f4f4f4;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    background: linear-gradient(135deg, #333, #555);
+    background-size: 30px 30px;
+    background-image: repeating-linear-gradient(
+            45deg,
+            #333 0,
+            #333 15px,
+            #555 15px,
+            #555 30px
+    );
     font-family: Arial, sans-serif;
 }
 
+/* Main game container */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #333; /* Dark gray for tetris case */
+    border: 10px solid #222;
+    border-radius: 20px;
+    padding: 20px;
+    width: 250px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.7); /* Shadow for a 3D look */
+}
+
+/* Screen container */
+.screen {
+    background-color: #000; /* Black screen background */
+    border: 5px solid #444;
+    width: 200px;
+    height: 260px; /* Adjusted to fit canvas */
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Canvas styling for game area */
 #gameCanvas {
-    border: 2px solid #333;
+    background-color: #A0A083; /* Light greenish-gray background for tetris effect */
+    background-image:
+            linear-gradient(90deg, #8B8B82 1px, transparent 1px),
+            linear-gradient(180deg, #8B8B82 1px, transparent 1px);
+    background-size: 12px 12px; /* Size of the squares */
+    width: 100%; /* Ensure the canvas fits the container */
+    height: 100%;
+    border: 2px solid #666; /* Dark border for a more retro look */
+}
+
+/* Score display */
+#score {
+    font-size: 18px;
+    color: #AAA;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Controls container */
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Button and select styles for tetris look */
+button, select {
+    background-color: transparent; /* Transparent buttons */
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    border-radius: 20px; /* Oval shape for select */
+    width: 80px;
+    height: 30px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+button {
+    width: 30px;
+    background-color: #FFD700;
+}
+
+button:disabled {
+    border-color: #666; /* Gray border for disabled buttons */
+    color: #666;
+    cursor: not-allowed;
+}
+
+select {
+    background-color: transparent;
+    color: #FFD700;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Labels above buttons */
+.label {
+    color: #FFD700;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: -3px;
 }

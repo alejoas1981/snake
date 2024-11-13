@@ -13,10 +13,8 @@ class Snake {
             x: this.segments[0].x + this.direction.x,
             y: this.segments[0].y + this.direction.y
         };
-        console.log(`Current direction: (${this.direction.x}, ${this.direction.y})`); // Debugging line
         // Add the new head position to the beginning of the segments array
         this.segments.unshift(head);
-        console.log(`Moving to: (${head.x}, ${head.y})`); // Debugging line
 
         // If the snake is not growing, remove the last segment
         if (!this.growing) {
@@ -29,7 +27,6 @@ class Snake {
     setDirection(x, y) {
         // Ensure that the new direction is not directly opposite to the current direction
         if ((x !== 0 && x !== -this.direction.x) || (y !== 0 && y !== -this.direction.y)) {
-            console.log(`Direction changed to: (${x}, ${y})`); // Debugging line
             this.direction = { x, y };
         }
     }

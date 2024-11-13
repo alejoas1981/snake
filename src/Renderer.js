@@ -2,28 +2,33 @@
 
 class Renderer {
     constructor() {
-        // Find the canvas and set up the WebGL context
         this.canvas = document.getElementById('gameCanvas');
-        this.context = this.canvas.getContext('2d'); // Using 2D context for simplicity
-
-        // Set background color
-        this.context.fillStyle = '#000';
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context = this.canvas.getContext('2d');
+        this.canvas.width = 200;  // Set canvas width to match CSS
+        this.canvas.height = 260; // Set canvas height to match CSS
     }
 
     render(snake, food) {
-        // Clear the canvas
+        // Clear the canvas with a transparent background to show the dot pattern
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Draw food
-        this.context.fillStyle = '#ff0000';
+        // Draw food as a solid black square
+        this.context.fillStyle = '#000'; // Black color for food
         const foodPosition = food.getPosition();
-        this.context.fillRect(foodPosition.x * 20, foodPosition.y * 20, 20, 20);
+        this.context.fillRect(foodPosition.x * 10, foodPosition.y * 10, 10, 10);
 
-        // Draw snake
-        this.context.fillStyle = '#00ff00';
+        // Draw snake segments with black border and black inner square with transparent gap
         snake.segments.forEach(segment => {
-            this.context.fillRect(segment.x * 20, segment.y * 20, 20, 20);
+            // Draw outer black square (border)
+            this.context.fillStyle = '#000';
+            this.context.fillRect(segment.x * 10, segment.y * 10, 10, 10);
+
+            // Draw inner transparent square to create gap
+            this.context.clearRect(segment.x * 10 + 2, segment.y * 10 + 2, 6, 6);
+
+            // Draw inner black square
+            this.context.fillStyle = '#000';
+            this.context.fillRect(segment.x * 10 + 3, segment.y * 10 + 3, 4, 4);
         });
     }
 }
