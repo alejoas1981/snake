@@ -7,20 +7,56 @@ class Snake {
         this.growing = false;                // Flag to determine if the snake should grow
     }
 
-    move() {
-        // Calculate new head position based on current direction
-        const head = {
-            x: this.segments[0].x + this.direction.x,
-            y: this.segments[0].y + this.direction.y
-        };
-        // Add the new head position to the beginning of the segments array
-        this.segments.unshift(head);
+    setRandomStartPosition(gridWidth, gridHeight) {
+        // Set random position, ensuring it is at least 3 cells from the edge
+        const minDistanceFromEdge = 3;
+        const maxX = gridWidth - minDistanceFromEdge;
+        const maxY = gridHeight - minDistanceFromEdge;
 
-        // If the snake is not growing, remove the last segment
+        const startX = Math.floor(Math.random() * (maxX - minDistanceFromEdge) + minDistanceFromEdge);
+        const startY = Math.floor(Math.random() * (maxY - minDistanceFromEdge) + minDistanceFromEdge);
+
+        this.segments = [{ x: startX, y: startY }]; // Start with a single segment
+
+        // Set random initial direction
+        const directions = [
+            { x: 1, y: 0 },  // Right
+            { x: -1, y: 0 }, // Left
+            { x: 0, y: 1 },  // Down
+            { x: 0, y: -1 }  // Up
+        ];
+        this.direction = directions[Math.floor(Math.random() * directions.length)];
+    }
+
+    move(gridWidth, gridHeight) {
+        const head = this.segments[0];
+        const newHead = {
+            x: head.x + this.direction.x,
+            y: head.y + this.direction.y
+        };
+
+        // Wrap horizontally
+        if (newHead.x >= gridWidth) {
+            newHead.x = 0; // Exits right, re-enters from left
+        } else if (newHead.x < 0) {
+            newHead.x = gridWidth - 1; // Exits left, re-enters from right
+        }
+
+        // Wrap vertically
+        if (newHead.y >= gridHeight) {
+            newHead.y = 0; // Exits bottom, re-enters from top
+        } else if (newHead.y < 0) {
+            newHead.y = gridHeight - 1; // Exits top, re-enters from bottom
+        }
+
+        // Add new head position to the beginning of segments
+        this.segments.unshift(newHead);
+
+        // Remove the last segment if not growing
         if (!this.growing) {
             this.segments.pop();
         } else {
-            this.growing = false;  // Reset growing flag
+            this.growing = false;
         }
     }
 

@@ -62,23 +62,26 @@ class Game {
     }
 
     start() {
-        // Ensure that a speed is selected before starting the game
         if (!this.speed) return;
 
         this.isGameOver = false;
         this.score = 0;
+
+        // Use cellSize from Renderer to calculate grid dimensions
+        this.grid.width = Math.floor(this.renderer.canvas.width / this.renderer.cellSize);
+        this.grid.height = Math.floor(this.renderer.canvas.height / this.renderer.cellSize);
+
         this.snake = new Snake();
+        this.snake.setRandomStartPosition(this.grid.width, this.grid.height);
         this.food.reposition(this.grid);
 
         document.getElementById('score').textContent = `Score: ${this.score}`;
 
-        // Initialize InputHandler only after the game starts
         new InputHandler(this.snake);
 
-        // Disable the dropdown and "Start" button after game starts
         this.startButton.disabled = true;
         this.speedSelect.disabled = true;
-        this.restartButton.disabled = false; // Enable "Restart" button during the game
+        this.restartButton.disabled = false;
 
         this.gameLoop();
     }
@@ -86,9 +89,9 @@ class Game {
     gameLoop() {
         if (this.isGameOver) return;
 
-        this.snake.move();
+        // Pass grid dimensions to move method for boundary handling
+        this.snake.move(this.grid.width, this.grid.height);
 
-        // Check for collision with food
         if (this.snake.checkCollision(this.food.getPosition())) {
             this.snake.grow();
             this.food.reposition(this.grid);
@@ -96,15 +99,13 @@ class Game {
             document.getElementById('score').textContent = `Score: ${this.score}`;
         }
 
-        // Check for wall or self-collision
-        if (this.checkWallCollision() || this.snake.checkSelfCollision()) {
+        if (this.snake.checkSelfCollision()) {
             this.endGame();
             return;
         }
 
         this.renderer.render(this.snake, this.food);
 
-        // Run game loop with the selected speed delay
         setTimeout(() => this.gameLoop(), this.speed);
     }
 
@@ -124,6 +125,9 @@ class Game {
         this.startButton.disabled = true;
         this.speedSelect.disabled = false;
         this.speedSelect.value = ""; // Reset dropdown to initial state
+
+        // Display "GAME OVER!" message on the canvas
+        this.renderer.displayGameOverMessage();
     }
 
     restart() {
@@ -135,6 +139,9 @@ class Game {
         // Reset snake and food position
         this.snake = new Snake();
         this.food.reposition(this.grid);
+
+        // Clear canvas to reset the screen
+        this.renderer.clearScreen();
 
         // Reset speed selection and enable speed dropdown
         this.speed = null;
