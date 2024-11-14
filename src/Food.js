@@ -8,13 +8,14 @@ class Food {
     }
 
     reposition(grid) {
+        // Generate random position within grid bounds
         this.position.x = Math.floor(Math.random() * grid.width);
         this.position.y = Math.floor(Math.random() * grid.height);
 
-        // Randomly assign type of food (with a chance for double food)
-        this.type = Math.random() < 0.2 ? 'double' : 'normal'; // 20% chance for double food
+        // Randomly assign type of food with a 20% chance for double food
+        this.type = Math.random() < 0.2 ? 'double' : 'normal';
 
-        // If double food, set a timer for it to disappear
+        // Set a timer for double food to disappear after 5 seconds
         if (this.type === 'double') {
             clearTimeout(this.timer);
             this.timer = setTimeout(() => {

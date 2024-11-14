@@ -13,6 +13,7 @@ class Snake {
         const maxX = gridWidth - minDistanceFromEdge;
         const maxY = gridHeight - minDistanceFromEdge;
 
+        // Calculate random start positions with min distance from edges
         const startX = Math.floor(Math.random() * (maxX - minDistanceFromEdge) + minDistanceFromEdge);
         const startY = Math.floor(Math.random() * (maxY - minDistanceFromEdge) + minDistanceFromEdge);
 

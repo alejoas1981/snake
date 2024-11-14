@@ -10,12 +10,18 @@ class Game {
     constructor() {
         this.snake = new Snake();
         this.food = new Food();
-        this.grid = new Grid(20, 20);
         this.renderer = new Renderer();
 
         this.score = 0;
         this.isGameOver = false;
         this.speed = null; // Speed will be set based on selection
+
+        // Calculate grid dimensions based on canvas size and cellSize from Renderer
+        const cellSize = this.renderer.cellSize;
+        this.grid = {
+            width: Math.floor(this.renderer.canvas.width / cellSize),
+            height: Math.floor(this.renderer.canvas.height / cellSize)
+        };
 
         this.food.reposition(this.grid);
 
@@ -24,21 +30,18 @@ class Game {
         this.speedSelect = document.getElementById('speedSelect');
         this.restartButton = document.getElementById('restartButton');
 
-        // Event listener for speed selection
+        // Event listeners for UI
         this.speedSelect.addEventListener('change', () => {
             this.setSpeed();
         });
-
-        // Event listener for the "Start" button
         this.startButton.addEventListener('click', () => {
             this.start();
         });
-
-        // Event listener for the "Restart" button
         this.restartButton.addEventListener('click', () => {
             this.restart();
         });
 
+        // Event listeners for key hold and release
         window.addEventListener('keydown', (e) => this.handleKeyDown(e));
         window.addEventListener('keyup', (e) => this.handleKeyUp(e));
     }
@@ -61,7 +64,7 @@ class Game {
         }
 
         this.speed = this.baseSpeed;
-        this.fastSpeed = this.baseSpeed / 3; // Calculate fast speed as half of base speed
+        this.fastSpeed = this.baseSpeed >> 1; // Fast speed is half of base speed
         this.startButton.disabled = !this.speed;
     }
 
@@ -70,10 +73,6 @@ class Game {
 
         this.isGameOver = false;
         this.score = 0;
-
-        // Use cellSize from Renderer to calculate grid dimensions
-        this.grid.width = Math.floor(this.renderer.canvas.width / this.renderer.cellSize);
-        this.grid.height = Math.floor(this.renderer.canvas.height / this.renderer.cellSize);
 
         this.snake = new Snake();
         this.snake.setRandomStartPosition(this.grid.width, this.grid.height);
@@ -118,59 +117,43 @@ class Game {
         setTimeout(() => this.gameLoop(), this.speed);
     }
 
-    checkWallCollision() {
-        const head = this.snake.segments[0];
-        return head.x < 0 || head.x >= this.grid.width || head.y < 0 || head.y >= this.grid.height;
-    }
-
     endGame() {
         this.isGameOver = true;
         document.getElementById('score').textContent = `Game Over! Final Score: ${this.score}`;
 
-        // Enable the "Restart" button after game ends
         this.restartButton.disabled = false;
-
-        // Reset dropdown and "Start" button after game ends
         this.startButton.disabled = true;
         this.speedSelect.disabled = false;
         this.speedSelect.value = ""; // Reset dropdown to initial state
 
-        // Display "GAME OVER!" message on the canvas
         this.renderer.displayGameOverMessage();
     }
 
     restart() {
-        // Reset game state and UI for a new start
         this.isGameOver = true; // Set to game over to prevent any unwanted actions
         this.score = 0;
         document.getElementById('score').textContent = `Score: ${this.score}`;
 
-        // Reset snake and food position
         this.snake = new Snake();
         this.food.reposition(this.grid);
 
-        // Clear canvas to reset the screen
         this.renderer.clearScreen();
 
-        // Reset speed selection and enable speed dropdown
         this.speed = null;
         this.speedSelect.value = "";
         this.speedSelect.disabled = false;
 
-        // Disable "Restart" and enable "Start" button
         this.restartButton.disabled = true;
         this.startButton.disabled = true;
     }
 
     handleKeyDown(event) {
-        // Set fast speed when holding down direction keys
         if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
             this.speed = this.fastSpeed;
         }
     }
 
     handleKeyUp(event) {
-        // Return to base speed when direction key is released
         if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
             this.speed = this.baseSpeed;
         }
